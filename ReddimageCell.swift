@@ -10,6 +10,5 @@ import UIKit
 
 class ReddimageCell : UITableViewCell {
     @IBOutlet weak var reddimage: UIImageView!
-    
-    
+
 }

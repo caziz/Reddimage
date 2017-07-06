@@ -20,8 +20,10 @@ class ReddimageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.reddimageTableView.allowsSelection = false
+
         self.loadImages(count: 50, with: "aww")
+        self.reddimageTableView.rowHeight = UITableViewAutomaticDimension
+        self.reddimageTableView.estimatedRowHeight = 200
     }
     
     override func didReceiveMemoryWarning() {
@@ -61,7 +63,7 @@ class ReddimageViewController: UIViewController {
                 guard let value = response.result.value else {
                     fatalError("no json at api")
                 }
-                for i in 0...10 {
+                for i in 0...toLoad {
                     self.displayImages(index: i, with: JSON(value))
                 }
                 print("completed loading images")
@@ -73,9 +75,11 @@ class ReddimageViewController: UIViewController {
     }
     
     // make status bar white
+    /*
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+     */
 }
 
 extension ReddimageViewController: UITableViewDataSource {
@@ -86,6 +90,7 @@ extension ReddimageViewController: UITableViewDataSource {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "reddimageHeaderCell", for: indexPath) as! ReddimageHeaderCell
             cell.leftLabel.text = reddimages[indexPath.section].title
+            
             var score = reddimages[indexPath.section].score
             if(score.characters.count > 4) {
                 let index = score.index(score.endIndex, offsetBy: -3)
@@ -116,18 +121,14 @@ extension ReddimageViewController: UITableViewDataSource {
 extension ReddimageViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
-        case 0:
-            return 50
         case 1:
             let deviceWidth = UIScreen.main.bounds.size.width
             let ratio : Double = Double(reddimages[indexPath.section].ratio)
             return CGFloat(ratio) * deviceWidth
         default:
-            fatalError()
+            return -1
         }
     }
-
-
 }
 
 extension ReddimageViewController: UITextFieldDelegate {
@@ -136,7 +137,6 @@ extension ReddimageViewController: UITextFieldDelegate {
             self.loadImages(count: 50, with: text)
         }
     }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         self.view.endEditing(true)
@@ -144,6 +144,10 @@ extension ReddimageViewController: UITextFieldDelegate {
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
+        self.reddimageTableView.setEditing(false, animated: false)
+        self.reddimageTableView.endEditing(true)
+        self.resignFirstResponder()
+        self.reddimageTableView.resignFirstResponder()
     }
     
     
