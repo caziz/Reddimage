@@ -20,7 +20,7 @@ class ReddimageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.reddimageTextField.delegate = self
         self.loadImages(count: 50, with: "aww")
         self.reddimageTableView.rowHeight = UITableViewAutomaticDimension
         self.reddimageTableView.estimatedRowHeight = 200
@@ -63,23 +63,18 @@ class ReddimageViewController: UIViewController {
                 guard let value = response.result.value else {
                     fatalError("no json at api")
                 }
+                self.reddimages = []
                 for i in 0...toLoad {
                     self.displayImages(index: i, with: JSON(value))
+                    self.reddimageTableView.reloadData()
                 }
                 print("completed loading images")
-                self.reddimageTableView.reloadData()
+                //self.reddimageTableView.reloadData()
             case .failure(let error):
                 fatalError(error as? String ?? "unknown error!")
             }
         }
     }
-    
-    // make status bar white
-    /*
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-     */
 }
 
 extension ReddimageViewController: UITableViewDataSource {
@@ -126,6 +121,7 @@ extension ReddimageViewController: UITableViewDelegate {
             let ratio : Double = Double(reddimages[indexPath.section].ratio)
             return CGFloat(ratio) * deviceWidth
         default:
+            // auto adjust height for non images
             return -1
         }
     }
@@ -138,16 +134,9 @@ extension ReddimageViewController: UITextFieldDelegate {
         }
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        self.view.endEditing(true)
+        self.loadImages(count: 50, with: self.reddimageTextField?.text ?? "cat")
+        print("hi")
         return true
-    }
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-        self.reddimageTableView.setEditing(false, animated: false)
-        self.reddimageTableView.endEditing(true)
-        self.resignFirstResponder()
-        self.reddimageTableView.resignFirstResponder()
     }
     
     
