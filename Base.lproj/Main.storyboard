@@ -101,7 +101,7 @@
                                     <outlet property="delegate" destination="fXK-cg-sDK" id="xDo-7X-xYi"/>
                                 </connections>
                             </tableView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="aww" borderStyle="roundedRect" placeholder="subreddit" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="bOb-g3-xTQ">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="pics" borderStyle="roundedRect" placeholder="subreddit" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="bOb-g3-xTQ">
                                 <rect key="frame" x="122" y="30" width="237" height="25"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="25" id="pM7-lG-30C"/>
