@@ -21,7 +21,7 @@ class ReddimageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.reddimageTextField.delegate = self
-        self.loadImages(count: 50, with: "aww")
+        self.loadImages(count: 25, with: "aww")
         self.reddimageTableView.rowHeight = UITableViewAutomaticDimension
         self.reddimageTableView.estimatedRowHeight = 200
     }
