@@ -24,7 +24,7 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="304" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Aoh-54-z7O">
                                 <rect key="frame" x="0.0" y="65" width="375" height="602"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="separatorColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="sectionIndexBackgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
@@ -51,6 +51,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="trailingMargin" secondItem="IOi-S4-GqA" secondAttribute="trailing" constant="45" id="69Y-EE-NNo"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="iHB-Xp-IEs" secondAttribute="trailing" id="8wl-0c-0ky"/>
@@ -82,12 +83,22 @@
                                                         <constraint firstAttribute="height" constant="6" id="l5P-bO-JLV"/>
                                                     </constraints>
                                                 </view>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6SX-6s-hOS">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="219.5"/>
+                                                    <connections>
+                                                        <action selector="imagePressed:" destination="fXK-cg-sDK" eventType="touchUpInside" id="Pdk-QH-Bug"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="w0A-bd-T8V" firstAttribute="leading" secondItem="S7Y-yU-m2w" secondAttribute="leading" id="21G-Yp-YEb"/>
                                                 <constraint firstAttribute="trailing" secondItem="dTp-fi-zBO" secondAttribute="trailing" id="7Ev-1c-Rvf"/>
                                                 <constraint firstItem="dTp-fi-zBO" firstAttribute="top" secondItem="w0A-bd-T8V" secondAttribute="bottom" id="DGo-2J-vvj"/>
+                                                <constraint firstAttribute="trailing" secondItem="6SX-6s-hOS" secondAttribute="trailing" id="DeW-vI-IpL"/>
                                                 <constraint firstAttribute="trailing" secondItem="w0A-bd-T8V" secondAttribute="trailing" id="GVg-Ht-QgK"/>
+                                                <constraint firstItem="dTp-fi-zBO" firstAttribute="top" secondItem="6SX-6s-hOS" secondAttribute="bottom" id="Xud-Qz-9hF"/>
+                                                <constraint firstItem="6SX-6s-hOS" firstAttribute="top" secondItem="S7Y-yU-m2w" secondAttribute="top" id="YSY-y3-r1n"/>
+                                                <constraint firstItem="6SX-6s-hOS" firstAttribute="leading" secondItem="S7Y-yU-m2w" secondAttribute="leading" id="hWQ-XJ-Drj"/>
                                                 <constraint firstItem="w0A-bd-T8V" firstAttribute="top" secondItem="S7Y-yU-m2w" secondAttribute="top" id="i3x-Rg-PQv"/>
                                                 <constraint firstItem="dTp-fi-zBO" firstAttribute="leading" secondItem="S7Y-yU-m2w" secondAttribute="leading" id="kKW-bm-Kx2"/>
                                                 <constraint firstAttribute="bottom" secondItem="dTp-fi-zBO" secondAttribute="bottom" id="xbj-hF-mJv"/>
@@ -119,6 +130,16 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We couldn't find any images for that subreddit." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0WE-zZ-hso" userLabel="Error">
+                                <rect key="frame" x="78" y="95" width="220" height="88"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="220" id="ODh-IW-xkp"/>
+                                    <constraint firstAttribute="height" constant="88" id="mbf-Q7-3cK"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -126,15 +147,18 @@
                             <constraint firstItem="Aoh-54-z7O" firstAttribute="leading" secondItem="npQ-0s-G1w" secondAttribute="leading" id="5j9-9b-NlQ"/>
                             <constraint firstItem="bOb-g3-xTQ" firstAttribute="leading" secondItem="YEp-ue-b4t" secondAttribute="trailing" constant="2" id="6j0-dH-YIX"/>
                             <constraint firstItem="YEp-ue-b4t" firstAttribute="top" secondItem="HLh-py-jGn" secondAttribute="bottom" constant="10" id="GWe-3e-wnk"/>
+                            <constraint firstItem="0WE-zZ-hso" firstAttribute="centerX" secondItem="npQ-0s-G1w" secondAttribute="centerX" id="N7C-c3-Scc"/>
                             <constraint firstItem="Q28-1k-6mT" firstAttribute="top" secondItem="Aoh-54-z7O" secondAttribute="bottom" id="Or2-4X-OWB"/>
                             <constraint firstItem="Aoh-54-z7O" firstAttribute="top" secondItem="YEp-ue-b4t" secondAttribute="bottom" constant="10" id="Rr6-cT-ATi"/>
                             <constraint firstItem="bOb-g3-xTQ" firstAttribute="top" secondItem="HLh-py-jGn" secondAttribute="bottom" constant="10" id="SXK-Wv-cI6"/>
+                            <constraint firstItem="Aoh-54-z7O" firstAttribute="top" secondItem="0WE-zZ-hso" secondAttribute="top" constant="-30" id="T85-CX-WhE"/>
                             <constraint firstItem="bOb-g3-xTQ" firstAttribute="trailing" secondItem="npQ-0s-G1w" secondAttribute="trailingMargin" id="e4W-XK-cPL"/>
                             <constraint firstItem="YEp-ue-b4t" firstAttribute="leading" secondItem="npQ-0s-G1w" secondAttribute="leadingMargin" id="iDF-wQ-w66"/>
                             <constraint firstAttribute="trailing" secondItem="Aoh-54-z7O" secondAttribute="trailing" id="kRm-oM-X71"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="errorMessage" destination="0WE-zZ-hso" id="vZD-KB-MfS"/>
                         <outlet property="reddimageTableView" destination="Aoh-54-z7O" id="TFD-7U-Oi5"/>
                         <outlet property="reddimageTextField" destination="bOb-g3-xTQ" id="dDw-bU-uH6"/>
                     </connections>

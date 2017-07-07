@@ -14,4 +14,6 @@ struct ReddimagePost {
     var score: String
     var image: UIImage
     var ratio: Double
+    var link:  String
+    
 }

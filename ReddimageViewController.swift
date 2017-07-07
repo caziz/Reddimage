@@ -6,6 +6,13 @@
 //  Copyright © 2017 Christopher Aziz. All rights reserved.
 //
 
+/*
+    TODO:   gif support buggy
+            pagination
+            link to reddit
+ */
+
+
 import UIKit
 import Alamofire
 import SwiftyJSON
@@ -14,8 +21,15 @@ import SwiftGifOrigin
 class ReddimageViewController: UIViewController {
     var reddimages : [ReddimagePost] = []
     var activityIndicator : UIActivityIndicatorView = UIActivityIndicatorView()
-
+    var currentSubreddit : String = ""
     
+    @IBOutlet weak var errorMessage: UILabel!
+    @IBAction func imagePressed(_ sender: UIButton) {
+        let touchPoint = sender.convert(CGPoint.zero, to: self.reddimageTableView)
+        let index = self.reddimageTableView.indexPathForRow(at: touchPoint)
+        let url = URL(string: reddimages[index![0]].link)!
+        UIApplication.shared.open(url, options: [:]) { x in}
+    }
     @IBOutlet weak var reddimageTableView: UITableView!
     @IBOutlet weak var reddimageTextField: UITextField!
     override func viewDidLoad() {
@@ -29,9 +43,8 @@ class ReddimageViewController: UIViewController {
 
     }
     
-    func constructImage(index: Int, json: JSON) -> Bool {
+    func constructImage(post: JSON) -> Bool {
         // get link
-        let post = json["data"]["children"][index]["data"]
         guard let image = getImage(post: post) else {
             print("didn't load image")
             return false
@@ -43,8 +56,9 @@ class ReddimageViewController: UIViewController {
         let height = post["preview"]["images"][0]["source"]["height"].doubleValue
         let width = post["preview"]["images"][0]["source"]["width"].doubleValue
         let ratio = height/width
+        let link = "https://www.reddit.com\(post["permalink"])"
         // init reddimage and append
-        let reddimage = ReddimagePost(title: titleText, score: score, image: image, ratio: ratio)
+        let reddimage = ReddimagePost(title: titleText, score: score, image: image, ratio: ratio, link: link)
         reddimages.append(reddimage)
         return true
     }
@@ -73,10 +87,16 @@ class ReddimageViewController: UIViewController {
     }
     
     func loadImages(count toLoad: Int, with: String) {
-        self.startSpinner()
+        var toSearch = with
+        self.errorMessage.isHidden = true
         reddimages = []
         reddimageTableView.reloadData()
-        let apiToContact = "https://www.reddit.com/r/\(with)/.json?count=\(toLoad)&after=t3_10omtd/"
+        self.startSpinner()
+        if self.reddimageTextField.text == "bug" {
+            self.reddimageTextField.text = "feature"
+            toSearch = "feature"
+        }
+        let apiToContact = "https://www.reddit.com/r/\(toSearch)/.json?count=\(toLoad)&after=t3_10omtd/"
         Alamofire.request(apiToContact).validate().responseJSON { response in
             switch response.result {
             case .success:
@@ -85,20 +105,25 @@ class ReddimageViewController: UIViewController {
                 }
                 // load images
                 var validReddimages = 0
+                let children = JSON(value)["data"]["children"]
                 for i in 0..<toLoad {
-                    if self.constructImage(index: i, json: JSON(value)) {
+                    let post = children[i]["data"]
+                    if self.constructImage(post: post) {
                         validReddimages += 1
                     }
                 }
+
                 if validReddimages == 0 {
                     self.reddimageTextField.text = ""
+                    self.errorMessage.text = "We couldn't find any images for that subreddit."
+                    self.errorMessage.isHidden = false
                 }
+                
                 // display images
                 self.reddimageTableView.reloadData()
                 self.reddimageTableView.setContentOffset(CGPoint.zero, animated: false)
                 self.stopSpinner()
             case .failure:
-                self.reddimageTextField.text = ""
                 return
             }
         }
@@ -169,7 +194,10 @@ extension ReddimageViewController: UITableViewDelegate {
 extension ReddimageViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         // search cannot be pressed without text
-        self.loadImages(count: 30, with: self.reddimageTextField.text!)
+        if currentSubreddit != textField.text {
+            currentSubreddit = textField.text!
+            self.loadImages(count: 30, with: self.reddimageTextField.text!)
+        }
         return true
         
     }
@@ -186,11 +214,9 @@ extension ReddimageViewController {
         activityIndicator.hidesWhenStopped = true
         self.view.addSubview(activityIndicator)
         activityIndicator.startAnimating()
-        UIApplication.shared.beginIgnoringInteractionEvents()
     }
     
     func stopSpinner() {
         activityIndicator.stopAnimating()
-        UIApplication.shared.endIgnoringInteractionEvents()
     }
 }
