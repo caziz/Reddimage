@@ -13,25 +13,27 @@ import SwiftGifOrigin
 
 class ReddimageViewController: UIViewController {
     var reddimages : [ReddimagePost] = []
+    var activityIndicator : UIActivityIndicatorView = UIActivityIndicatorView()
+
     
     @IBOutlet weak var reddimageTableView: UITableView!
     @IBOutlet weak var reddimageTextField: UITextField!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // initialize
-        self.loadImages(count: 30, with: "pics")
+        self.loadImages(count: 1000, with: "pics")
         self.reddimageTextField.delegate = self
         // auto resize header cell
         self.reddimageTableView.rowHeight = UITableViewAutomaticDimension
         self.reddimageTableView.estimatedRowHeight = 200
+
     }
     
     func constructImage(index: Int, json: JSON) -> Bool {
         // get link
         let post = json["data"]["children"][index]["data"]
         guard let image = getImage(post: post) else {
-            print("didn't load shit")
+            print("didn't load image")
             return false
         }
         
@@ -45,12 +47,9 @@ class ReddimageViewController: UIViewController {
         let reddimage = ReddimagePost(title: titleText, score: score, image: image, ratio: ratio)
         reddimages.append(reddimage)
         return true
-
-        
     }
     
     func getImage(post: JSON) -> UIImage? {
-        
         // try to get image
         let imageString = post["preview"]["images"][0]["source"]["url"].stringValue
         if  let imageURL = URL(string: imageString),
@@ -59,7 +58,7 @@ class ReddimageViewController: UIViewController {
             print("loaded image")
             return image
         }
-        
+
         // try to get gif
         let gifString = post["url"].stringValue
         if  let gifURL = URL(string: gifString),
@@ -74,15 +73,16 @@ class ReddimageViewController: UIViewController {
     }
     
     func loadImages(count toLoad: Int, with: String) {
-        let apiToContact = "https://www.reddit.com/r/\(with)/.json"
+        self.startSpinner()
+        reddimages = []
+        reddimageTableView.reloadData()
+        let apiToContact = "https://www.reddit.com/r/\(with)/.json?count=\(toLoad)&after=t3_10omtd/"
         Alamofire.request(apiToContact).validate().responseJSON { response in
             switch response.result {
             case .success:
                 guard let value = response.result.value else {
                     return
                 }
-                // clear images
-                self.reddimages = []
                 // load images
                 var validReddimages = 0
                 for i in 0..<toLoad {
@@ -96,6 +96,7 @@ class ReddimageViewController: UIViewController {
                 // display images
                 self.reddimageTableView.reloadData()
                 self.reddimageTableView.setContentOffset(CGPoint.zero, animated: false)
+                self.stopSpinner()
             case .failure:
                 self.reddimageTextField.text = ""
                 return
@@ -104,6 +105,8 @@ class ReddimageViewController: UIViewController {
     }
     
 }
+
+// MARK: - UITableViewDataSource
 
 extension ReddimageViewController: UITableViewDataSource {
 
@@ -144,6 +147,8 @@ extension ReddimageViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
+
 extension ReddimageViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
@@ -159,11 +164,33 @@ extension ReddimageViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - UITextFieldDelegate
+
 extension ReddimageViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         // search cannot be pressed without text
         self.loadImages(count: 30, with: self.reddimageTextField.text!)
         return true
         
+    }
+}
+
+// MARK: - Spinner
+
+extension ReddimageViewController {
+    func startSpinner() {
+        activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        activityIndicator.transform = CGAffineTransform.init(scaleX: 3, y: 3)
+        activityIndicator.center = self.view.center
+        activityIndicator.hidesWhenStopped = true
+        self.view.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
+        UIApplication.shared.beginIgnoringInteractionEvents()
+    }
+    
+    func stopSpinner() {
+        activityIndicator.stopAnimating()
+        UIApplication.shared.endIgnoringInteractionEvents()
     }
 }
